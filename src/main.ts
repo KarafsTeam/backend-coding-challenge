@@ -1,3 +1,4 @@
+import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { swaggerConfig } from './common/swagger';
@@ -18,6 +19,9 @@ async function bootstrap() {
 
   // Add global validation pipe
   app.useGlobalPipes(GlobalValidationPipe);
+
+  // Security middleware
+  app.use(helmet());
 
   // Swagger config
   const document = SwaggerModule.createDocument(app, swaggerConfig);

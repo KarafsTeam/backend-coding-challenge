@@ -26,6 +26,12 @@ services:
       context: .
       target: production
       dockerfile: ./Dockerfile
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     deploy:
       replicas: 3
       restart_policy:

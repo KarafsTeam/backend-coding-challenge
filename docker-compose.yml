@@ -1,0 +1,106 @@
+services:
+  # Backend Development Service
+  dev:
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    env_file: ./.env
+    container_name: karafs-dev
+    restart: unless-stopped
+    networks:
+      - karafs-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+      - kafka
+    ports:
+      - '${BACKEND_PORT}:${BACKEND_PORT}'
+    command: 'npm run start:debug'
+
+  # backend Production Service
+  api:
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    env_file: ./.env
+    restart: unless-stopped
+    networks:
+      - karafs-network
+    depends_on:
+      - mongo
+      - kafka
+    ports:
+      - 3000-3002:${BACKEND_PORT}
+    command: 'dist/main.js'
+
+  # MongoDB Service
+  mongo:
+    image: mongo:7-jammy
+    env_file: ./.env
+    restart: always
+    container_name: karafs-mongo
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+    volumes:
+      - mongo_data:/data/db
+
+  # Kafka Service
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    env_file: ./.env
+    container_name: karafs-kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_HOST}:${KAFKA_PORT}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - karafs-network
+    ports:
+      - ${KAFKA_PORT}:${KAFKA_PORT}
+
+  # Zookeeper Service
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    env_file: ./.env
+    container_name: karafs-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_PORT}
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - karafs-network
+
+  # Webserver Service
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - karafs-network
+    depends_on:
+      - api
+
+networks:
+  karafs-network:
+    driver: bridge
+
+volumes:
+  mongo_data:

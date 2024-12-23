@@ -4,12 +4,16 @@ import { swaggerConfig } from './common/swagger';
 import { SwaggerModule } from '@nestjs/swagger';
 import { EnvironmentVariables } from './common/env.validation';
 import { ConfigService } from '@nestjs/config';
+import { GlobalValidationPipe } from './common/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Get env config
   const configService: ConfigService<EnvironmentVariables> = app.get(ConfigService);
+
+  // Add global validation pipe
+  app.useGlobalPipes(GlobalValidationPipe);
 
   // Swagger config
   const document = SwaggerModule.createDocument(app, swaggerConfig);

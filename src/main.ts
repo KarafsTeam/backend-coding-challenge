@@ -5,12 +5,16 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { EnvironmentVariables } from './common/env.validation';
 import { ConfigService } from '@nestjs/config';
 import { GlobalValidationPipe } from './common/validation.pipe';
+import { GlobalExceptionFilter } from './common/exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Get env config
   const configService: ConfigService<EnvironmentVariables> = app.get(ConfigService);
+
+  // Apply the exception filter globally
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   // Add global validation pipe
   app.useGlobalPipes(GlobalValidationPipe);

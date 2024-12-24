@@ -4,11 +4,12 @@ const GlobalValidationPipe = new ValidationPipe({
   whitelist: true,
   stopAtFirstError: true,
   exceptionFactory: (errors) => {
-    return new BadRequestException({
-      errors,
-      status: 'error',
-      message: 'Validation failed',
-    });
+    const transformedErrors = {};
+    for (const error of errors) {
+      transformedErrors[error.property] = Object.values(error.constraints)[0];
+    }
+
+    return new BadRequestException({ message: 'Validation failed', errors: transformedErrors });
   },
 });
 

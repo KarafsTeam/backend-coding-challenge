@@ -25,17 +25,17 @@ export class User extends AbstractDocument {
   // TODO: it's better to define below fields in different documents
   // to track user actions history and behavior
   // and avoid making user document larger
-  @Prop({ required: true, default: 2000 }) // 2000ml = 2L default daily goal
-  dailyWaterGoal!: number;
+  @Prop({ default: 2000 }) // 2000ml = 2L default daily goal
+  dailyWaterGoal?: number;
 
   @Prop({ default: 0 })
-  currentStreak!: number;
+  currentStreak?: number;
 
   @Prop({ type: Date, default: null })
-  lastStreakUpdate!: Date | null;
+  lastStreakUpdate?: Date | null;
 
   @Prop({ default: false })
-  locationTrackingEnabled!: boolean;
+  locationTrackingEnabled?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

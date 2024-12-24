@@ -19,8 +19,8 @@ export class UserDocument extends AbstractDocument {
   @Prop({ required: true })
   password!: string;
 
-  @Prop({ type: [{ type: String, enum: UserRole }], required: true })
-  roles!: UserRole[];
+  @Prop({ type: String, enum: UserRole, required: true })
+  role!: UserRole;
 
   // TODO: it's better to define below fields in different documents
   // to track user actions history and behavior

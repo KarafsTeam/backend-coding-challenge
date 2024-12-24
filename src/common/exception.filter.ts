@@ -2,30 +2,24 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from
 import { Request, Response } from 'express';
 
 @Catch()
-export class GlobalExceptionFilter implements ExceptionFilter {
+export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-
     const status =
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = exception instanceof HttpException ? exception.message : 'Internal server error';
+    const exceptionResponse =
+      exception instanceof HttpException ? exception.getResponse() : { message: 'Internal server error' };
 
-    const errorResponse = {
+    const message =
+      typeof exceptionResponse === 'string' ? { message: exceptionResponse } : exceptionResponse;
+
+    response.status(status).json({
       statusCode: status,
-      message,
       path: request.url,
-      method: request.method,
-    };
-
-    // Log the error for monitoring
-    console.error('Error occurred:', {
-      ...errorResponse,
-      stack: exception instanceof Error ? exception.stack : undefined,
+      ...message,
     });
-
-    response.status(status).json(errorResponse);
   }
 }

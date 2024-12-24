@@ -12,7 +12,7 @@ export enum UserRole {
   // Disable __v field
   versionKey: false,
 })
-export class UserDocument extends AbstractDocument {
+export class User extends AbstractDocument {
   @Prop({ required: true, unique: true })
   email!: string;
 
@@ -38,7 +38,7 @@ export class UserDocument extends AbstractDocument {
   locationTrackingEnabled!: boolean;
 }
 
-export const UserSchema = SchemaFactory.createForClass(UserDocument);
+export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.index({ email: 1 });
 UserSchema.index({ roles: 1 });

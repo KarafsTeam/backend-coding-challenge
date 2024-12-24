@@ -6,7 +6,10 @@ import { trimEmptySpaces } from 'src/common/utils';
 import { User } from 'src/user/user.schema';
 
 export class SigninDTO extends PickType(User, ['email', 'password']) {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'User email address',
+    example: 'user@example.com',
+  })
   @MaxLength(128)
   @IsEmail({})
   @Transform(({ value }) => trimEmptySpaces(value))
@@ -14,7 +17,10 @@ export class SigninDTO extends PickType(User, ['email', 'password']) {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'User password',
+    example: 'strongPassword123',
+  })
   @MaxLength(30)
   @Transform(({ value }) => trimEmptySpaces(value))
   @IsString()

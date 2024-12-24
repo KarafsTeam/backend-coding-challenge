@@ -1,8 +1,8 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { SignUpDTO } from './dto/signup.dto';
-import { SigninDTO } from './dto/signin.dto';
+import { SignupRequestDTO, SignupResponseDTO } from './dto/signup.dto';
+import { SigninRequestDTO, SigninResponseDTO } from './dto/signin.dto';
 
 @ApiTags('auth')
 @Controller('/auth')
@@ -12,18 +12,16 @@ export class AuthController {
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Sign up a new user' })
-  @ApiResponse({ status: 201, description: 'User successfully signed up' })
-  @ApiResponse({ status: 400, description: 'Validation failed' })
-  async signupUser(@Body() body: SignUpDTO) {
+  @ApiOkResponse({ type: SignupResponseDTO, description: 'User successfully signed up' })
+  async signupUser(@Body() body: SignupRequestDTO) {
     return await this.authService.signup(body);
   }
 
   @Post('/signin')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sign in an existing user and obtain new tokens' })
-  @ApiResponse({ status: 200, description: 'User successfully signed in' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async loginUser(@Body() body: SigninDTO) {
+  @ApiOkResponse({ type: SigninResponseDTO, description: 'User successfully signed in' })
+  async loginUser(@Body() body: SigninRequestDTO) {
     return await this.authService.signin(body);
   }
 }

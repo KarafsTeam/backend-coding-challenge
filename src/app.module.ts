@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { EnvironmentVariables, validate } from './common/env.validation';
-import { AppController } from './app.controller';
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { LoggerModule } from 'nestjs-pino';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EnvironmentVariables, validate } from './common/env.validation';
 
 @Module({
   imports: [

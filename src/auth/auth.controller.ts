@@ -3,6 +3,7 @@ import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignupRequestDTO, SignupResponseDTO } from './dto/signup.dto';
 import { SigninRequestDTO, SigninResponseDTO } from './dto/signin.dto';
+import { GetNewTokenRequestDto } from './dto/access-token.dto';
 
 @ApiTags('auth')
 @Controller('/auth')
@@ -23,5 +24,13 @@ export class AuthController {
   @ApiOkResponse({ type: SigninResponseDTO, description: 'User successfully signed in' })
   async loginUser(@Body() body: SigninRequestDTO) {
     return await this.authService.signin(body);
+  }
+
+  @Post('/token')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Renew access token using a refresh token' })
+  @ApiOkResponse({ type: SigninResponseDTO, description: 'New access token generated' })
+  async renewAccessToken(@Body() body: GetNewTokenRequestDto) {
+    return this.authService.getNewTokens(body);
   }
 }

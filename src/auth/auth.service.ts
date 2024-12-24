@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { EnvironmentVariables } from 'src/common/env.validation';
 import { ConfigService } from '@nestjs/config';
 import { UserRole } from 'src/user/user.schema';
+import { GetNewTokenRequestDto } from './dto/access-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -135,5 +136,21 @@ export class AuthService {
       this.logger.error('Error in verifying access token:', error);
       throw new UnauthorizedException('Token is not valid.');
     }
+  }
+
+  async getNewTokens(body: GetNewTokenRequestDto): Promise<SigninResponseDTO> {
+    const payload = await this.verifyRefreshToken(body.refreshToken);
+
+    // Find user by id
+    const user = await this.userRepository.findOne({ _id: payload.id });
+
+    // Check user exists
+    if (!user) throw new BadRequestException('User is not found !');
+
+    // generate access tokens
+    const refreshToken = await this.getRefreshToken(user._id.toJSON());
+    const accessToken = await this.getAccessToken(user._id.toJSON(), user.role);
+
+    return { refreshToken, accessToken };
   }
 }

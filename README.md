@@ -1,6 +1,7 @@
 ### TODO:
 
 - add health check
+- store valid refresh tokens in a key value db like redis
 - using `forwardRef` is not a good practice, we just used it for sake of simplicity
 
 Welcome to the Karafs backend coding challenge repository! This challenge is designed to evaluate your skills in building robust, scalable, and maintainable backend systems using NestJS, TypeScript, MongoDB, and Kafka.

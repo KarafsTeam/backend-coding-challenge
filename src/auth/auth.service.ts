@@ -8,8 +8,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserRepository } from 'src/user/user.repository';
-import { SignUpDTO } from './dto/signup.dto';
-import { SigninDTO } from './dto/signin.dto';
+import { SignupRequestDTO, SignupResponseDTO } from './dto/signup.dto';
+import { SigninRequestDTO, SigninResponseDTO } from './dto/signin.dto';
 import { AccessTokenPayload, RefreshTokenPayload } from './auth.interface';
 import { JwtService } from '@nestjs/jwt';
 import { EnvironmentVariables } from 'src/common/env.validation';
@@ -25,22 +25,22 @@ export class AuthService {
     private configService: ConfigService<EnvironmentVariables>,
   ) {}
 
-  async signup({ email, password, role }: SignUpDTO) {
+  async signup({ email, password, role }: SignupRequestDTO): Promise<SignupResponseDTO> {
     const existingEmail = await this.userRepository.findOne({ email });
     if (existingEmail) throw new ConflictException('Email already exists.');
 
     const passwordHash = await this.getPasswordHash(password);
 
-    const user = await this.userRepository.create({
+    const { _id } = await this.userRepository.create({
       role: role,
       email: email,
       password: passwordHash,
     });
 
-    return user;
+    return { id: _id.toString(), email, role };
   }
 
-  async signin(loginUserDto: SigninDTO) {
+  async signin(loginUserDto: SigninRequestDTO): Promise<SigninResponseDTO> {
     const { email, password } = loginUserDto;
 
     // Find user by email address

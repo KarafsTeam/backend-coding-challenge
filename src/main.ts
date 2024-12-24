@@ -1,10 +1,11 @@
 import helmet from 'helmet';
-import { NestFactory } from '@nestjs/core';
+import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
-import { swaggerConfig } from './common/swagger';
-import { SwaggerModule } from '@nestjs/swagger';
-import { EnvironmentVariables } from './common/env.validation';
+import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { SwaggerModule } from '@nestjs/swagger';
+import { swaggerConfig } from './common/swagger';
+import { EnvironmentVariables } from './common/env.validation';
 import { GlobalValidationPipe } from './common/validation.pipe';
 import { GlobalExceptionFilter } from './common/exception.filter';
 
@@ -22,6 +23,9 @@ async function bootstrap() {
 
   // Security middleware
   app.use(helmet());
+
+  // Add Logger
+  app.useLogger(app.get(Logger));
 
   // Swagger config
   const document = SwaggerModule.createDocument(app, swaggerConfig);

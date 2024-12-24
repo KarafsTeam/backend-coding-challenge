@@ -21,7 +21,7 @@ import { EnvironmentVariables, validate } from './common/env.validation';
       pinoHttp: {
         transport: {
           target: 'pino-pretty',
-          options: { singleLine: true },
+          options: { singleLine: true, colorize: true },
         },
       },
     }),

@@ -27,7 +27,7 @@ services:
       target: production
       dockerfile: ./Dockerfile
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:3000/health"]
+      test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://localhost:3000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -63,6 +63,8 @@ services:
       - ${MONGO_PORT}:${MONGO_PORT}
     volumes:
       - mongo_data:/data/db
+    networks:
+      - karafs-network
 
   # Kafka Service
   kafka:

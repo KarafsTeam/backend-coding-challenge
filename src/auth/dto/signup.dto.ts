@@ -6,7 +6,7 @@ import { User } from 'src/user/user.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from 'src/user/user.schema';
 
-export class SignUpDTO extends PickType(User, ['email', 'password', 'role']) {
+export class SignupRequestDTO extends PickType(User, ['email', 'password', 'role']) {
   @ApiProperty({
     description: 'User email address',
     example: 'user@example.com',
@@ -39,4 +39,25 @@ export class SignUpDTO extends PickType(User, ['email', 'password', 'role']) {
   @IsEnum(UserRole)
   @IsNotEmpty()
   role: UserRole = UserRole.USER;
+}
+
+export class SignupResponseDTO {
+  @ApiProperty({
+    description: 'User ID',
+    example: '60d0fe4f5311236168a109ca',
+  })
+  id: string;
+
+  @ApiProperty({
+    description: 'User email address',
+    example: 'user@example.com',
+  })
+  email: string;
+
+  @ApiProperty({
+    description: 'User role',
+    enum: UserRole,
+    example: UserRole.USER,
+  })
+  role: UserRole;
 }

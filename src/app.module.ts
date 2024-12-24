@@ -10,18 +10,23 @@ import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    // Config module to read and validate Environment variables
     ConfigModule.forRoot({ validate, isGlobal: true }),
+
+    // Rate limiting / implement in webserver/NGINX
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
+
+    // Logging Module
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
           target: 'pino-pretty',
-          options: {
-            singleLine: true,
-          },
+          options: { singleLine: true },
         },
       },
     }),
+
+    // MongoDB Connection
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -34,6 +39,7 @@ import { LoggerModule } from 'nestjs-pino';
         },
       }),
     }),
+
     AuthModule,
     UserModule,
   ],

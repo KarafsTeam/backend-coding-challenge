@@ -9,5 +9,6 @@ import { forwardRef, Module } from '@nestjs/common';
   imports: [ConfigModule, forwardRef(() => UserModule), JwtModule.register({})],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}

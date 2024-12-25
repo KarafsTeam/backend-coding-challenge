@@ -1,6 +1,7 @@
 ### TODO:
 
 - add health check
+- it's better to not use `:latest` tag for docker images in production.
 - store valid refresh tokens in a key value db like redis
 - using `forwardRef` is not a good practice, we just used it for sake of simplicity
 

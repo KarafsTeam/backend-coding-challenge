@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EnvironmentVariables, validate } from './common/env.validation';
+import { WaterTrackingModule } from './water-tracking/water-tracking.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { EnvironmentVariables, validate } from './common/env.validation';
 
     AuthModule,
     UserModule,
+    WaterTrackingModule,
   ],
   controllers: [AppController],
 })

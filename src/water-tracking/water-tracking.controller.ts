@@ -20,4 +20,16 @@ export class WaterTrackingController {
   async setNewWaterGoal(@UserId() userId: Types.ObjectId, @Body() body: PostWaterGoalDto) {
     return this.waterTrackingService.setNewWaterGoal(userId, body.dailyGoal);
   }
+
+  // @Post('intake')
+  // @ApiOperation({ summary: 'Track water intake for the user.' })
+  // async trackWaterIntake(@Body('userId') userId: Types.ObjectId, @Body('amount') amount: number) {
+  //   return this.waterTrackingService.trackWaterIntake(userId, amount);
+  // }
+
+  // @Get('streak')
+  // @ApiOperation({ summary: 'Get the current streak for the user.' })
+  // async getStreak(@Param('userId') userId: Types.ObjectId) {
+  //   return this.waterTrackingService.getStreak(userId);
+  // }
 }

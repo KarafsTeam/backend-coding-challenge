@@ -8,6 +8,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EnvironmentVariables, validate } from './common/env.validation';
 import { WaterTrackingModule } from './water-tracking/water-tracking.module';
+import { MovementTrackingModule } from './movement-tracking/movement-tracking.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { WaterTrackingModule } from './water-tracking/water-tracking.module';
     AuthModule,
     UserModule,
     WaterTrackingModule,
+    MovementTrackingModule,
   ],
   controllers: [AppController],
 })

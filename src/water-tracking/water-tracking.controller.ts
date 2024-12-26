@@ -1,7 +1,6 @@
 import { Types } from 'mongoose';
 import { WaterGoal } from './schemas';
 import { UserRole } from 'src/user/user.schema';
-import { PostWaterGoalDto } from './dto/water-goal.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserId } from 'src/auth/decorators/user.decorator';
@@ -9,7 +8,7 @@ import { WaterTrackingService } from './water-tracking.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Post, Body, UseGuards, HttpStatus, HttpCode } from '@nestjs/common';
 import { TrackingController } from 'src/common/controllers/tracking.controller';
-import { PostWaterIntakeDto } from './dto/water-intake.dto';
+import { PostWaterGoalDto, PostWaterIntakeDto } from './dto';
 
 @Roles(UserRole.USER)
 @UseGuards(JwtAuthGuard)

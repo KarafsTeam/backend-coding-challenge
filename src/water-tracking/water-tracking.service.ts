@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { WaterGoalRepository, WaterIntakeRepository, WaterStreakRepository } from './repositories';
 
@@ -20,38 +20,46 @@ export class WaterTrackingService {
     return newGoal;
   }
 
-  // async trackWaterIntake(userId: Types.ObjectId, amount: number) {
-  //   const activeGoal = await this.waterGoalRepository.findOne({ user: userId, isActive: true });
-  //   if (!activeGoal) {
-  //     throw new Error('No active water goal found');
-  //   }
+  async trackWaterIntake(userId: Types.ObjectId, amount: number) {
+    // Find the active goal
+    const activeGoal = await this.waterGoalRepository.findOne({ user: userId, isActive: true });
 
-  //   await this.waterIntakeRepository.create({ user: userId, goal: activeGoal._id, amount });
+    // Check if there is an active goal
+    if (!activeGoal) throw new NotFoundException('No active water goal found');
 
-  //   // Check if the intake meets the daily goal
-  //   const totalIntakeToday = await this.waterIntakeRepository.aggregate([
-  //     { $match: { user: userId, createdAt: { $gte: new Date().setHours(0, 0, 0, 0) } } },
-  //     { $group: { _id: null, total: { $sum: '$amount' } } },
-  //   ]);
+    // Create new intake record
+    await this.waterIntakeRepository.create({ user: userId, goal: activeGoal._id, amount });
 
-  //   if (totalIntakeToday[0]?.total >= activeGoal.dailyGoal) {
-  //     // Update streak
-  //     const streak = await this.waterStreakRepository.findOne({ user: userId, isActive: true });
-  //     if (streak) {
-  //       await this.waterStreakRepository.findOneAndUpdate(
-  //         { _id: streak._id },
-  //         { $inc: { currentStreak: 1 } },
-  //       );
-  //     } else {
-  //       await this.waterStreakRepository.create({
-  //         user: userId,
-  //         goal: activeGoal._id,
-  //         currentStreak: 1,
-  //         isActive: true,
-  //       });
-  //     }
-  //   }
-  // }
+    // Calculate total intake for today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const totalIntakeToday = await this.waterIntakeRepository.aggregate([
+      { $match: { user: userId, createdAt: { $gte: startOfDay } } },
+      { $group: { _id: null, total: { $sum: '$amount' } } },
+    ]);
+
+    console.log(totalIntakeToday, 'ltoooootal');
+
+    // Check if the intake meets or exceeds the daily goal
+    // if (totalIntakeToday[0]?.total >= activeGoal.dailyGoal) {
+    //   // Update or create streak
+    //   const streak = await this.waterStreakRepository.findOne({ user: userId, isActive: true });
+    //   if (streak) {
+    //     await this.waterStreakRepository.findOneAndUpdate(
+    //       { _id: streak._id },
+    //       { $inc: { currentStreak: 1 } },
+    //     );
+    //   } else {
+    //     await this.waterStreakRepository.create({
+    //       user: userId,
+    //       goal: activeGoal._id,
+    //       currentStreak: 1,
+    //       isActive: true,
+    //     });
+    //   }
+    // }
+  }
 
   // async getStreak(userId: Types.ObjectId) {
   //   return this.waterStreakRepository.findOne({ user: userId, isActive: true });

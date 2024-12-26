@@ -9,6 +9,7 @@ import { WaterTrackingService } from './water-tracking.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Post, Body, UseGuards, HttpStatus, HttpCode } from '@nestjs/common';
 import { TrackingController } from 'src/common/controllers/tracking.controller';
+import { PostWaterIntakeDto } from './dto/water-intake.dto';
 
 @Roles(UserRole.USER)
 @UseGuards(JwtAuthGuard)
@@ -25,11 +26,13 @@ export class WaterTrackingController {
     return this.waterTrackingService.setNewWaterGoal(userId, body.dailyGoal);
   }
 
-  // @Post('intake')
-  // @ApiOperation({ summary: 'Track water intake for the user.' })
-  // async trackWaterIntake(@Body('userId') userId: Types.ObjectId, @Body('amount') amount: number) {
-  //   return this.waterTrackingService.trackWaterIntake(userId, amount);
-  // }
+  @Post('intake')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Track water intake for the user.' })
+  @ApiOkResponse({ description: 'Water intake tracked successfully' })
+  async trackWaterIntake(@Body('userId') userId: Types.ObjectId, @Body() body: PostWaterIntakeDto) {
+    return this.waterTrackingService.trackWaterIntake(userId, body.amount);
+  }
 
   // @Get('streak')
   // @ApiOperation({ summary: 'Get the current streak for the user.' })

@@ -15,13 +15,13 @@ export class AbstractDocument {
     description: 'The date and time when the document was created',
     type: Date,
   })
-  @Prop({ type: Date, default: Date.now, required: false })
+  @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
   @ApiProperty({
     description: 'The date and time when the document was last updated',
     type: Date,
   })
-  @Prop({ type: Date, default: Date.now, required: false })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }

@@ -28,40 +28,55 @@ export class WaterTrackingService {
     if (!activeGoal) throw new NotFoundException('No active water goal found');
 
     // Create new intake record
-    await this.waterIntakeRepository.create({ user: userId, goal: activeGoal._id, amount });
+    const intake = await this.waterIntakeRepository.create({ user: userId, goal: activeGoal._id, amount });
 
     // Calculate total intake for today
+    const totalIntakeToday = await this.calculateTotalIntakeToday(userId);
+
+    // Check if the intake meets or exceeds the daily goal
+    if (totalIntakeToday >= activeGoal.dailyGoal) {
+      // Get the start of today
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      // Update or create streak
+      const streak = await this.waterStreakRepository.findOne({ user: userId, isActive: true });
+
+      if (streak) {
+        // Check if the streak was updated today
+        if (streak.updatedAt < startOfDay) {
+          await this.waterStreakRepository.findOneAndUpdate(
+            { _id: streak._id },
+            { $inc: { currentStreak: 1 }, updatedAt: new Date() },
+          );
+        }
+      } else {
+        // Create new streak
+        await this.waterStreakRepository.create({
+          user: userId,
+          isActive: true,
+          currentStreak: 1,
+          goal: activeGoal._id,
+        });
+      }
+
+      return intake;
+    }
+  }
+
+  private async calculateTotalIntakeToday(userId: Types.ObjectId): Promise<number> {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
-    const totalIntakeToday = await this.waterIntakeRepository.aggregate([
+    const totalIntakeToday = await this.waterIntakeRepository.aggregate<{ total: number }>([
       { $match: { user: userId, createdAt: { $gte: startOfDay } } },
       { $group: { _id: null, total: { $sum: '$amount' } } },
     ]);
 
-    console.log(totalIntakeToday, 'ltoooootal');
-
-    // Check if the intake meets or exceeds the daily goal
-    // if (totalIntakeToday[0]?.total >= activeGoal.dailyGoal) {
-    //   // Update or create streak
-    //   const streak = await this.waterStreakRepository.findOne({ user: userId, isActive: true });
-    //   if (streak) {
-    //     await this.waterStreakRepository.findOneAndUpdate(
-    //       { _id: streak._id },
-    //       { $inc: { currentStreak: 1 } },
-    //     );
-    //   } else {
-    //     await this.waterStreakRepository.create({
-    //       user: userId,
-    //       goal: activeGoal._id,
-    //       currentStreak: 1,
-    //       isActive: true,
-    //     });
-    //   }
-    // }
+    return totalIntakeToday[0]?.total || 0;
   }
 
-  // async getStreak(userId: Types.ObjectId) {
-  //   return this.waterStreakRepository.findOne({ user: userId, isActive: true });
-  // }
+  async getStreak(userId: Types.ObjectId) {
+    return this.waterStreakRepository.findOne({ user: userId, isActive: true });
+  }
 }

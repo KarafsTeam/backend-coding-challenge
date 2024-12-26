@@ -4,8 +4,8 @@ import { AuthService } from './auth.service';
 import { GetNewTokenRequestDto } from './dto/access-token.dto';
 import { SigninRequestDTO, SigninResponseDTO, SignupRequestDTO, SignupResponseDTO } from './dto';
 
-@ApiTags('auth')
 @Controller('/auth')
+@ApiTags('Authentication And Authorization')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

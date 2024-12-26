@@ -1,4 +1,4 @@
-import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, Types, UpdateQuery } from 'mongoose';
 import { AbstractDocument } from './abstract.schema';
 import { Logger } from '@nestjs/common';
 
@@ -53,5 +53,20 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     }
 
     return document;
+  }
+
+  async aggregate<T = TDocument>(pipeline: PipelineStage[]): Promise<T[]> {
+    try {
+      const documents = await this.model.aggregate<T>(pipeline);
+
+      if (!documents || documents.length === 0) {
+        this.logger.warn('No documents found for aggregate pipeline');
+      }
+
+      return documents;
+    } catch (error) {
+      this.logger.error('Aggregate operation failed:', error);
+      throw error;
+    }
   }
 }

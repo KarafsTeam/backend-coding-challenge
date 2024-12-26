@@ -16,9 +16,11 @@ import { WaterGoalRepository, WaterIntakeRepository, WaterStreakRepository } fro
 @Module({
   imports: [
     AuthModule,
-    MongooseModule.forFeature([{ name: WaterGoal.name, schema: WaterGoalSchema }]),
-    MongooseModule.forFeature([{ name: WaterStreak.name, schema: WaterStreakSchema }]),
-    MongooseModule.forFeature([{ name: WaterIntake.name, schema: WaterIntakeSchema }]),
+    MongooseModule.forFeature([
+      { name: WaterGoal.name, schema: WaterGoalSchema },
+      { name: WaterStreak.name, schema: WaterStreakSchema },
+      { name: WaterIntake.name, schema: WaterIntakeSchema },
+    ]),
   ],
   controllers: [WaterTrackingController],
   providers: [WaterTrackingService, WaterIntakeRepository, WaterGoalRepository, WaterStreakRepository],

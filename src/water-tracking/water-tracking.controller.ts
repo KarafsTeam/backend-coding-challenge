@@ -1,22 +1,26 @@
-import { Post, Body, UseGuards } from '@nestjs/common';
-import { WaterTrackingService } from './water-tracking.service';
 import { Types } from 'mongoose';
-import { TrackingController } from 'src/common/controllers/tracking.controller';
-import { ApiOperation } from '@nestjs/swagger';
+import { WaterGoal } from './schemas';
+import { UserRole } from 'src/user/user.schema';
+import { PostWaterGoalDto } from './dto/water-goal.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UserRole } from 'src/user/user.schema';
 import { UserId } from 'src/auth/decorators/user.decorator';
-import { PostWaterGoalDto } from './dto/water-goal.dto';
+import { WaterTrackingService } from './water-tracking.service';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Post, Body, UseGuards, HttpStatus, HttpCode } from '@nestjs/common';
+import { TrackingController } from 'src/common/controllers/tracking.controller';
 
 @Roles(UserRole.USER)
 @UseGuards(JwtAuthGuard)
+@ApiTags('Water Tracking')
 @TrackingController('/water')
 export class WaterTrackingController {
   constructor(private readonly waterTrackingService: WaterTrackingService) {}
 
   @Post('goal')
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Set a new water goal for the user.' })
+  @ApiOkResponse({ type: WaterGoal, description: 'New water goal set successfully' })
   async setNewWaterGoal(@UserId() userId: Types.ObjectId, @Body() body: PostWaterGoalDto) {
     return this.waterTrackingService.setNewWaterGoal(userId, body.dailyGoal);
   }

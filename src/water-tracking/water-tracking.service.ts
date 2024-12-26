@@ -16,6 +16,7 @@ export class WaterTrackingService {
 
     // Create new goal
     const newGoal = await this.waterGoalRepository.create({ user: userId, dailyGoal, isActive: true });
+
     return newGoal;
   }
 

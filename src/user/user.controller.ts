@@ -8,10 +8,10 @@ import { Body, UseGuards, HttpStatus, HttpCode, Patch, Controller } from '@nestj
 import { UserService } from './user.service';
 import { PatchLocationTrackingDto } from './dto/location.dto';
 
-@Roles(UserRole.USER)
-@UseGuards(JwtAuthGuard)
 @ApiTags('User')
 @Controller('/user')
+@Roles(UserRole.USER)
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

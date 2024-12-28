@@ -9,6 +9,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EnvironmentVariables, validate } from './common/env.validation';
 import { WaterTrackingModule } from './water-tracking/water-tracking.module';
 import { MovementTrackingModule } from './movement-tracking/movement-tracking.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { KAFKA_CLIENT_ID } from './common/constants';
 
 @Module({
   imports: [
@@ -42,6 +44,28 @@ import { MovementTrackingModule } from './movement-tracking/movement-tracking.mo
       }),
     }),
 
+    // kafka Connection
+    ClientsModule.registerAsync({
+      isGlobal: true,
+      clients: [
+        {
+          name: 'KAFKA_SERVICE',
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          useFactory: (configService: ConfigService<EnvironmentVariables>) => {
+            return {
+              transport: Transport.KAFKA,
+              options: {
+                clientId: KAFKA_CLIENT_ID,
+                client: {
+                  brokers: [`${configService.get('KAFKA_HOST')}:${configService.get('KAFKA_PORT')}`],
+                },
+              },
+            };
+          },
+        },
+      ],
+    }),
     AuthModule,
     UserModule,
     WaterTrackingModule,

@@ -34,10 +34,6 @@ export class MovementTrackingController implements OnModuleInit {
 
   @EventPattern(MOVEMENT_TRACKING_TOPIC)
   async handleLocationData(@Payload() payload: { location: PostGpsLocationDto; userId: Types.ObjectId }) {
-    console.log(
-      'Received location dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:',
-      payload,
-    );
-    // Handle the received location data
+    await this.movementTrackingService.handleLocationData(payload);
   }
 }

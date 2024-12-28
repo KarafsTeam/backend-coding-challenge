@@ -1,12 +1,12 @@
 import { Types } from 'mongoose';
 import { getDistance } from 'geolib';
 import { lastValueFrom } from 'rxjs';
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { UserRepository } from 'src/user/user.repository';
 import { PostGpsLocationDto } from './dto/location-log.dto';
-
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { GpsLocationRepository } from './repository/gps-location.repository';
+
 @Injectable()
 export class MovementTrackingService {
   constructor(
@@ -18,7 +18,8 @@ export class MovementTrackingService {
   async onModuleInit() {}
 
   private async getUserLocationTrackingStatus() {
-    return await this.userRepo.find({ locationTrackingEnabled: true });
+    const { locationTrackingEnabled } = await this.userRepo.findOne({ locationTrackingEnabled: true });
+    return locationTrackingEnabled;
   }
 
   async logLocation(userId: Types.ObjectId, topic: string, location: PostGpsLocationDto) {
@@ -29,12 +30,22 @@ export class MovementTrackingService {
 
     const isEnabled = await this.getUserLocationTrackingStatus();
 
-    if (isEnabled) throw new BadRequestException('Location tracking is disabled for this user');
+    if (!isEnabled) throw new BadRequestException('Location tracking is disabled for this user');
 
     await lastValueFrom(this.kafkaClient.emit(topic, { userId, location }));
   }
 
   async handleLocationData(payload: { location: PostGpsLocationDto; userId: Types.ObjectId }) {
+    // TODO: aggregated periodically in summary statistics (total stance per hour) and
+    // store it in a time-series db like InfluxDB
+
+    // sample data:
+    // { latitude: 37.7749, longitude: -122.4194 },
+    // { latitude: 37.7750, longitude: -122.4195 },
+    // { latitude: 37.7751, longitude: -122.4196 },
+    // { latitude: 37.7752, longitude: -122.4197 },
+    // { latitude: 37.7753, longitude: -122.4198 },
+
     const { location, userId } = payload;
 
     // Save the GPS location data

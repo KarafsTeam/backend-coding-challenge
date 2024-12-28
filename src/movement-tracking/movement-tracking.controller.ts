@@ -7,7 +7,7 @@ import { MOVEMENT_TRACKING_TOPIC } from 'src/common/constants';
 import { MovementTrackingService } from './movement-tracking.service';
 import { ClientKafka, EventPattern, Payload } from '@nestjs/microservices';
 import { TrackingController } from 'src/common/controllers/tracking.controller';
-import { HttpCode, HttpStatus, Inject, OnModuleInit, Post, UseGuards } from '@nestjs/common';
+import { Body, HttpCode, HttpStatus, Inject, OnModuleInit, Post, UseGuards } from '@nestjs/common';
 import { UserId } from 'src/auth/decorators/user.decorator';
 import { PostGpsLocationDto } from './dto/location-log.dto';
 
@@ -28,7 +28,7 @@ export class MovementTrackingController implements OnModuleInit {
   @Roles(UserRole.USER)
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async logUserLocation(@UserId() userId: Types.ObjectId, location: PostGpsLocationDto) {
+  async logUserLocation(@UserId() userId: Types.ObjectId, @Body() location: PostGpsLocationDto) {
     await this.movementTrackingService.logLocation(userId, MOVEMENT_TRACKING_TOPIC, location);
   }
 

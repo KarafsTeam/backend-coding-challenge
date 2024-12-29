@@ -38,22 +38,22 @@
 docker compose up dev --build
 
 ```
+Access the API documentation at http://localhost:3000/docs.
+
 
 ##### Start For Production
 
 ```bash
 docker compose up nginx --build -d
 ```
+Access the API documentation at http://localhost/docs.
+
 
 ##### Run Test
 
 ```bash
 npm run test
 ```
-
-##### Documentations
-
-Access the API documentation at http://localhost:3000/docs.
 
 Welcome to the Karafs backend coding challenge repository! This challenge is designed to evaluate your skills in building robust, scalable, and maintainable backend systems using NestJS, TypeScript, MongoDB, and Kafka.
 

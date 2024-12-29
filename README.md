@@ -1,9 +1,59 @@
+### Features
+
+- **JWT-based Authentication**: Secure authentication using JSON Web Tokens.
+- **Role-based Access Control**: Different roles (Admin, User) with specific permissions.
+- **Water Intake Tracker**: Log daily water intake and track streaks.
+- **Movement Tracker**: Track user movements and calculate distance traveled.
+- **Kafka Integration**: Use Kafka for handling GPS data.
+- **Swagger**: API documentation with Swagger (OpenAPI).
+- **Docker and Docker Compose**: Containerization for seamless deployment.
+- **Rate Limiting**: Implement rate limiting to prevent abuse.
+- **Logging**: Centralized logging with `nestjs-pino`.
+
+### Notes
+
+- It's better to not use `:latest` tag for Docker images in production.
+- Store valid refresh tokens in a key-value database like Redis.
+- Using `forwardRef` is not a good practice; it was used here for simplicity.
+- Please read TODO: in the codebase.
+
 ### TODO:
 
-- add health check
-- it's better to not use `:latest` tag for docker images in production.
-- store valid refresh tokens in a key value db like redis
-- using `forwardRef` is not a good practice, we just used it for sake of simplicity
+**Pending improvements:**
+
+- Implement caching for frequently accessed data.
+- Implement comprehensive E2E and unit tests.
+- Optimize database queries and indexing.
+- Add more detailed logging and monitoring.
+
+**Note**: The implementation focuses on core functionalities to ensure timely delivery. Advanced configurations, optimizations, and additional features can be added in future iterations.
+
+#### Installation
+
+- Install [Docker and Docker Compose](https://www.docker.com/)
+
+#### Start Development Mode (hot-reload)
+
+```bash
+docker compose up dev --build
+
+```
+
+##### Start For Production
+
+```bash
+docker compose up nginx --build -d
+```
+
+##### Run Test
+
+```bash
+npm run test
+```
+
+##### Documentations
+
+Access the API documentation at http://localhost:3000/docs.
 
 Welcome to the Karafs backend coding challenge repository! This challenge is designed to evaluate your skills in building robust, scalable, and maintainable backend systems using NestJS, TypeScript, MongoDB, and Kafka.
 

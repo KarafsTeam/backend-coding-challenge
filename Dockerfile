@@ -6,7 +6,7 @@ COPY . .
 EXPOSE ${BACKEND_PORT}
 
 
-FROM node:22.12.0-alpine AS build
+FROM node:22.12.0 AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci

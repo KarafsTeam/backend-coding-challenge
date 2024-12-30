@@ -14,6 +14,7 @@
 
 - It's better to not use `:latest` tag for Docker images in production.
 - Store valid refresh tokens in a key-value database like Redis.
+- RabbitMQ is more fit for asynchronous load balancing, and Kafka suffers from head-of-line blocking for partitions.
 - Using `forwardRef` is not a good practice; it was used here for simplicity.
 - Please read TODO: in the codebase.
 
